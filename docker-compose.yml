@@ -4,6 +4,7 @@ services:
     container_name: "dashboard-app"
     build:
       context: .
-      dockerfile: ./app/Dockerfile
+      dockerfile: "./app/Dockerfile"
     volumes: 
-      - ./sample-dashboard/:/usr/src/sample-dashboard/
+      - "./sample-dashboard/:/usr/src/sample-dashboard/"
+    tty: true
