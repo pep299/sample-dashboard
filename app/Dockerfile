@@ -1,5 +1,5 @@
 # 公式からpython3.8.2-slimイメージをpull
-FROM python:3.8.2-slim
+FROM python:3.8.1-slim
 
 # 作業ディレクトリを設定
 WORKDIR /usr/src/sample-dashboard/
@@ -9,6 +9,10 @@ WORKDIR /usr/src/sample-dashboard/
 ENV PYTHONDONTWRITEBYTECODE 1
 # Pythonが標準入出力をバッファリングすることを防ぐ
 ENV PYTHONUNBUFFERED 1
+
+
+# pipの更新
+RUN pip install --upgrade pip==20.1
 
 # Pipenvをインストール
 # RUN pip install --upgrade pip \
