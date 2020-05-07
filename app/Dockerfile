@@ -1,4 +1,4 @@
-# 公式からpython3.8.2-slimイメージをpull
+# 公式からpython3.8.1-slimイメージをpull
 FROM python:3.8.1-slim
 
 # 作業ディレクトリを設定
@@ -10,9 +10,8 @@ ENV PYTHONDONTWRITEBYTECODE 1
 # Pythonが標準入出力をバッファリングすることを防ぐ
 ENV PYTHONUNBUFFERED 1
 
-
 # pipの更新
-RUN pip install --upgrade pip==20.1
+RUN pip install --upgrade pip==20.1 && pip install poetry
 
 # Pipenvをインストール
 # RUN pip install --upgrade pip \
@@ -24,5 +23,5 @@ RUN pip install --upgrade pip==20.1
 # # pipfileからパッケージをインストールしてDjango環境を構築
 # RUN pipenv install --skip-lock --system --dev
 
-# ホストのカレントディレクトリ（現在はappディレクトリ）を作業ディレクトリにコピー
-COPY ./sample-dashboard /usr/src/sample-dashboard
+# ホストのカレントディレクトリを作業ディレクトリにコピー
+COPY . /usr/src/sample-dashboard

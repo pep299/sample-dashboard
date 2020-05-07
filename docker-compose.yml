@@ -6,5 +6,5 @@ services:
       context: .
       dockerfile: "./app/Dockerfile"
     volumes: 
-      - "./sample-dashboard/:/usr/src/sample-dashboard/"
+      - "./:/usr/src/sample-dashboard/"
     tty: true
