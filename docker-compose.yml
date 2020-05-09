@@ -4,7 +4,18 @@ services:
     container_name: "dashboard-app"
     build:
       context: .
-      dockerfile: "./app/Dockerfile"
+      dockerfile: "./sample-dashboard/Dockerfile"
     volumes: 
-      - "./:/usr/src/sample-dashboard/"
+      - "./sample-dashboard/:/usr/src/sample-dashboard/"
+    tty: true
+  
+  front:
+    container_name: "dashboard-front"
+    build:
+      context: .
+      dockerfile: "./frontend/Dockerfile"
+    ports:
+      - '80:8080'
+    volumes:
+      - "./frontend/:/usr/src/frontend/"
     tty: true

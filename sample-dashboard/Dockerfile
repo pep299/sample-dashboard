@@ -24,4 +24,4 @@ RUN pip install --upgrade pip==20.1 && pip install poetry
 # RUN pipenv install --skip-lock --system --dev
 
 # ホストのカレントディレクトリを作業ディレクトリにコピー
-COPY . /usr/src/sample-dashboard
+COPY ./sample-dashboard /usr/src/sample-dashboard
