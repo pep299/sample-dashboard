@@ -1,21 +1,22 @@
 version: "3"
 services:
   app:
-    container_name: "dashboard-app"
+    container_name: dashboard-app
     build:
       context: .
-      dockerfile: "./sample-dashboard/Dockerfile"
+      dockerfile: ./sample-dashboard/Dockerfile
     volumes: 
-      - "./sample-dashboard/:/usr/src/sample-dashboard/"
+      - ./sample-dashboard/:/usr/src/sample-dashboard/
     tty: true
   
   front:
-    container_name: "dashboard-front"
+    container_name: dashboard-front
     build:
       context: .
-      dockerfile: "./frontend/Dockerfile"
+      dockerfile: ./frontend/Dockerfile
     ports:
-      - '80:8080'
+      - "8080:8080"
     volumes:
-      - "./frontend/:/usr/src/frontend/"
+      - ./frontend/:/usr/src/frontend/
+      # - /usr/src/frontend/node_modules
     tty: true

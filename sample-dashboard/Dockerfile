@@ -13,6 +13,10 @@ ENV PYTHONUNBUFFERED 1
 # pipの更新
 RUN pip install --upgrade pip==20.1 && pip install poetry
 
+COPY ./sample-dashboard/*.toml ./sample-dashboard/poetry.lock ./
+
+RUN poetry install
+
 # Pipenvをインストール
 # RUN pip install --upgrade pip \
 # && pip install pipenv
