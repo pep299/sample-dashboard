@@ -1,56 +1,64 @@
 <template>
   <v-app>
-    <v-app-bar app color="primary" dark>
-      <div class="d-flex align-center">
-        <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-2"
-          contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-          transition="scale-transition"
-          width="40"
-        />
-
-        <v-img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
-        />
-      </div>
-
-      <v-spacer></v-spacer>
-
-      <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
-      >
-        <span class="mr-2">Latest Release</span>
-        <v-icon>mdi-open-in-new</v-icon>
-      </v-btn>
+    <v-navigation-drawer app v-model="drawer" clipped>
+      <v-container>
+        <v-list-item>
+          <v-list-item-content>
+            <v-list-item-title class="title grey--text text--darken-2">
+              Navigation lists
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-divider></v-divider>
+        <v-list dense nav>
+          <v-list-item v-for="nav_list in nav_lists" :key="nav_list.name" :to="{ name: nav_list.link }">
+            <v-list-item-icon>
+              <v-icon>{{ nav_list.icon }}</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>{{ nav_list.name }}</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+      </v-container>
+    </v-navigation-drawer>
+    <v-app-bar color="primary" dark app clipped-left>
+      <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
+      <v-toolbar-title>Vuetify</v-toolbar-title>
+      <v-spacer />
+      <v-toolbar-items>
+        <v-btn text>Button</v-btn>
+      </v-toolbar-items>
     </v-app-bar>
 
     <v-content>
-      <HelloWorld />
+      <router-view />
     </v-content>
+
+    <v-footer color="primary" dark app>
+      Vuetify
+    </v-footer>
+
   </v-app>
 </template>
 
 <script>
-import HelloWorld from "./components/HelloWorld";
-
 export default {
   name: "App",
-
-  components: {
-    HelloWorld
+  data(){
+    return{
+      drawer: false,
+      nav_lists:[
+        {name: 'Home', icon: 'mdi-home', link: 'Home'},
+        {name: 'About', icon: 'mdi-circle', link: 'About'},
+        {name: 'Todo List', icon: 'mdi-checkbox-marked-outline', link: 'TodoList'}
+      ]
+    }
   },
-
-  data: () => ({
-    //
-  })
-};
+  methods: {
+    clickHamburgerMenu() {
+      this.drawer = !this.drawer
+    }
+  }
+}
 </script>
