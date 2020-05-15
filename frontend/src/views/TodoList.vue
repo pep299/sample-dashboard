@@ -6,14 +6,14 @@
       solo
       @keydown.enter="create"
     >
-      <v-fade-transition v-slot:append>
+      <!-- <v-fade-transition v-slot:append>
         <v-icon
           v-if="task"
           @click="create"
         >
           add_circle
         </v-icon>
-      </v-fade-transition>
+      </v-fade-transition> -->
     </v-text-field>
 
     <h2 class="display-1 success--text pl-4">
@@ -34,19 +34,28 @@
       <strong class="mx-4 info--text text--darken-2">
         Remaining: {{ remainingTasks }}
       </strong>
+      <v-spacer></v-spacer>
 
       <v-divider vertical></v-divider>
 
+      <v-spacer></v-spacer>
       <strong class="mx-4 success--text text--darken-2">
         Completed: {{ completedTasks }}
       </strong>
-
+      <v-progress-circular
+        :rotate=270
+        :value="progress"
+        class="mx-4"
+      ></v-progress-circular>
       <v-spacer></v-spacer>
 
-      <v-progress-circular
-        :value="progress"
-        class="mr-2"
-      ></v-progress-circular>
+      <v-divider vertical></v-divider>
+
+      <v-spacer></v-spacer>
+      <v-btn icon class="mx-4">
+        <v-icon>mdi-swap-vertical</v-icon>
+      </v-btn>
+      <v-spacer></v-spacer>
     </v-row>
 
     <v-divider class="mb-4"></v-divider>
@@ -78,14 +87,20 @@
 
               <v-spacer></v-spacer>
 
-              <v-scroll-x-transition>
+              <!-- <v-scroll-x-transition>
                 <v-icon
                   v-if="task.done"
                   color="success"
                 >
                   check
                 </v-icon>
-              </v-scroll-x-transition>
+              </v-scroll-x-transition> -->
+              <v-btn icon>
+                <v-icon>mdi-pencil</v-icon>
+              </v-btn>
+              <v-btn icon class="">
+                <v-icon>mdi-trash-can-outline</v-icon>
+              </v-btn>
             </v-list-item>
           </template>
         </v-list>
@@ -127,7 +142,7 @@ export default {
         done: false,
         text: this.task,
       })
-      this.task = null
+      this.task = ""
     }
   }
 };
