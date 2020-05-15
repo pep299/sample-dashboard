@@ -8,4 +8,4 @@ RUN yarn install
 
 COPY ./frontend /usr/src/frontend
 
-RUN yarn global add @vue/cli
+# RUN yarn global add @vue/cli

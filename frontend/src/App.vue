@@ -11,7 +11,11 @@
         </v-list-item>
         <v-divider></v-divider>
         <v-list dense nav>
-          <v-list-item v-for="nav_list in nav_lists" :key="nav_list.name" :to="{ name: nav_list.link }">
+          <v-list-item
+            v-for="nav_list in nav_lists"
+            :key="nav_list.name"
+            :to="{ name: nav_list.link }"
+          >
             <v-list-item-icon>
               <v-icon>{{ nav_list.icon }}</v-icon>
             </v-list-item-icon>
@@ -34,31 +38,33 @@
     <v-content>
       <router-view />
     </v-content>
-
     <v-footer color="primary" dark app>
       Vuetify
     </v-footer>
-
   </v-app>
 </template>
 
 <script>
 export default {
   name: "App",
-  data(){
-    return{
+  data() {
+    return {
       drawer: false,
-      nav_lists:[
-        {name: 'Home', icon: 'mdi-home', link: 'Home'},
-        {name: 'About', icon: 'mdi-circle', link: 'About'},
-        {name: 'Todo List', icon: 'mdi-checkbox-marked-outline', link: 'TodoList'}
+      nav_lists: [
+        { name: "Home", icon: "mdi-home", link: "Home" },
+        { name: "About", icon: "mdi-circle", link: "About" },
+        {
+          name: "Todo List",
+          icon: "mdi-checkbox-marked-outline",
+          link: "TodoList"
+        }
       ]
-    }
+    };
   },
   methods: {
     clickHamburgerMenu() {
-      this.drawer = !this.drawer
+      this.drawer = !this.drawer;
     }
   }
-}
+};
 </script>
