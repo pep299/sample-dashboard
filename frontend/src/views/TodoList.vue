@@ -63,46 +63,67 @@
     <v-card v-if="tasks.length > 0">
       <v-slide-y-transition>
         <v-list class="py-0">
-          <template v-for="(task, i) in tasks">
-            <v-divider
-              v-if="i !== 0"
-              :key="`${i}-divider`"
-            ></v-divider>
+          <draggable v-model="tasks" >
+            <template v-for="(task, i) in tasks">
+              <v-divider
+                v-if="i !== 0"
+                :key="`${i}-divider`"
+              ></v-divider>
 
-            <v-list-item :key="`${i}-${task.text}`">
-              <v-list-item-action>
-                <v-checkbox
-                  v-model="task.done"
-                  :color="task.done && 'grey' || 'primary'"
+              <v-list-item :key="`${i}-${task.text}`">
+                <v-list-item-action>
+                  <v-checkbox
+                    v-model="task.done"
+                    :color="task.done && 'grey' || 'primary'"
+                  >
+                    <template
+                      v-if="i !== editTargetIndex"
+                      v-slot:label
+                    >
+                      <div
+                        :class="task.done && 'grey--text' || 'primary--text'"
+                        class="ml-4"
+                        v-text="task.text"
+                      ></div>
+                    </template>
+                  </v-checkbox>
+                </v-list-item-action>
+
+                <v-text-field
+                  v-if="i === editTargetIndex"
+                  v-model="editText"
+                  outlined
+                  dense
+                  hide-details
+                  class="ml-n5 mr-1"
                 >
-                  <template v-slot:label>
-                    <div
-                      :class="task.done && 'grey--text' || 'primary--text'"
-                      class="ml-4"
-                      v-text="task.text"
-                    ></div>
+                  <template v-slot:append>
+                    <v-icon @click="saveText(task)" color="green">mdi-check-bold</v-icon>
+                    <v-icon @click="endEditText" color="grey" class="ml-2">mdi-close</v-icon>
                   </template>
-                </v-checkbox>
-              </v-list-item-action>
+                </v-text-field>
 
-              <v-spacer></v-spacer>
+                <template v-else>
+                  <v-spacer></v-spacer>
 
-              <!-- <v-scroll-x-transition>
-                <v-icon
-                  v-if="task.done"
-                  color="success"
-                >
-                  check
-                </v-icon>
-              </v-scroll-x-transition> -->
-              <v-btn icon>
-                <v-icon>mdi-pencil</v-icon>
-              </v-btn>
-              <v-btn icon class="">
-                <v-icon>mdi-trash-can-outline</v-icon>
-              </v-btn>
-            </v-list-item>
-          </template>
+                <!-- <v-scroll-x-transition>
+                  <v-icon
+                    v-if="task.done"
+                    color="success"
+                  >
+                    check
+                  </v-icon>
+                </v-scroll-x-transition> -->
+                  <v-btn @click="startEditText(i, task.text)" icon>
+                    <v-icon>mdi-pencil</v-icon>
+                  </v-btn>
+                </template>
+                <v-btn @click="deleteTask(task.order)" icon class="">
+                  <v-icon>mdi-trash-can-outline</v-icon>
+                </v-btn>
+              </v-list-item>
+            </template>
+          </draggable>
         </v-list>
       </v-slide-y-transition>
     </v-card>
@@ -110,39 +131,77 @@
 </template>
 
 <script>
+import draggable from 'vuedraggable'
+
 export default {
   name: "TodoListView",
+  components: {
+    draggable,
+  },
   data: () => ({
     tasks: [
       {
+        id: 1,
         done: false,
-        text: 'Foobar',
+        text: 'Foobar'
       },
       {
+        id: 2,
         done: false,
-        text: 'Fizzbuzz',
+        text: 'Fizzbuzz'
+      },
+      {
+        id: 3,
+        done: true,
+        text: 'bubble sort'
       },
     ],
-    task: null
+    editTasks: [],
+    task: "",
+    isSwap: false,
+    isEdit: false,
+    editText: '',
+    editTargetIndex: null
   }),
   computed: {
-    completedTasks () {
+    completedTasks() {
       return this.tasks.filter(task => task.done).length
     },
-    progress () {
+    progress() {
       return this.completedTasks / this.tasks.length * 100
     },
-    remainingTasks () {
+    remainingTasks() {
       return this.tasks.length - this.completedTasks
     }
   },
   methods: {
-    create () {
+    create() {
       this.tasks.push({
+        id: this.tasks.length + 1,
         done: false,
         text: this.task,
       })
       this.task = ""
+    },
+    startEditText(index, text) {
+      this.isEdit = true
+      this.editTargetIndex = index
+      this.editText = text
+      console.log(index, text)
+    },
+    endEditText() {
+      this.isEdit = false
+      this.editTargetIndex = null
+      this.editText = ""
+    },
+    saveText(task) {
+      task.text = this.editText
+      // this.save()
+      this.endEditText()
+    },
+    deleteTask(index) {
+      this.tasks.splice(index, 1)
+      this.endEditText()
     }
   }
 };
