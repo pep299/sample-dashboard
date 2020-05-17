@@ -4,16 +4,8 @@
       v-model="task"
       label="What are you working on?"
       solo
-      @keydown.enter="create"
+      @keypress.enter="create"
     >
-      <!-- <v-fade-transition v-slot:append>
-        <v-icon
-          v-if="task"
-          @click="create"
-        >
-          add_circle
-        </v-icon>
-      </v-fade-transition> -->
     </v-text-field>
 
     <h2 class="display-1 success--text pl-4">
@@ -63,91 +55,67 @@
 
     <v-divider class="mb-4"></v-divider>
 
-    <v-card v-if="tasks.length > 0">
-      <v-list v-if="isSwap" class="py-0">
-        <draggable v-model="editTasks">
-        <!-- <draggable v-model="editTasks" @end="draggableEnd"> -->
-          <template v-for="(task, i) in editTasks">
-            <!-- <v-divider
-              v-if="i !== 0"
-              :key="`${i}-divider`"
-            ></v-divider> -->
-
-            <v-list-item :key="`${i}-${task.text}`">
-              <v-icon>mdi-drag-vertical</v-icon>
+    <v-row v-if="tasks.length > 0">
+      <draggable v-if="isSwap" v-model="tasks" class="fill-width">
+        <v-col v-for="(task, i) in tasks" :key="`${i}-${task.text}`" cols="12" class="py-0">
+          <v-card outlined class="d-flex px-4 task-list">
+            <v-icon class="swap-icon">mdi-drag-vertical</v-icon>
+            <div
+              :class="task.done && 'grey--text' || 'primary--text'"
+              class="ml-4"
+              v-text="task.text"
+            ></div>
+          </v-card>
+        </v-col>
+      </draggable>
+      <v-col v-else v-for="(task, i) in tasks" :key="`${i}-${task.text}`" cols="12" class="py-0">
+        <v-card outlined class="d-flex px-4 task-list">
+          <v-checkbox
+            v-model="task.done"
+            hide-details
+            :color="task.done && 'grey' || 'primary'"
+            class="mt-0 pt-0"
+          >
+            <template
+              v-if="i !== editTargetIndex"
+              v-slot:label
+            >
               <div
                 :class="task.done && 'grey--text' || 'primary--text'"
                 class="ml-4"
                 v-text="task.text"
               ></div>
-            </v-list-item>
+            </template>
+          </v-checkbox>
+
+          <v-text-field
+            v-if="i === editTargetIndex"
+            v-model="editText"
+            outlined
+            dense
+            hide-details
+            class="ml-2 mr-1"
+          >
+            <template v-slot:append>
+              <v-icon @click="saveText(task)" color="green">mdi-check-bold</v-icon>
+              <v-icon @click="endEditText" color="grey" class="ml-2">mdi-close</v-icon>
+            </template>
+          </v-text-field>
+
+          <template v-else>
+            <v-spacer></v-spacer>
+            <v-btn @click="startEditText(i, task.text)" icon>
+              <v-icon>mdi-pencil</v-icon>
+            </v-btn>
           </template>
-        </draggable>
-      </v-list>
-      <template v-else>
-        <v-list class="py-0">
-          <template v-for="(task, i) in tasks">
-            <v-divider
-              v-if="i !== 0"
-              :key="`${i}-divider`"
-            ></v-divider>
 
-            <v-list-item :key="`${i}-${task.text}`">
-              <v-list-item-action>
-                <v-checkbox
-                  v-model="task.done"
-                  :color="task.done && 'grey' || 'primary'"
-                >
-                  <template
-                    v-if="i !== editTargetIndex"
-                    v-slot:label
-                  >
-                    <div
-                      :class="task.done && 'grey--text' || 'primary--text'"
-                      class="ml-4"
-                      v-text="task.text"
-                    ></div>
-                  </template>
-                </v-checkbox>
-              </v-list-item-action>
+          <v-btn @click="deleteTask(i)" icon>
+            <v-icon>mdi-trash-can-outline</v-icon>
+          </v-btn>
+        </v-card>
+      </v-col>
+    </v-row>
 
-              <v-text-field
-                v-if="i === editTargetIndex"
-                v-model="editText"
-                outlined
-                dense
-                hide-details
-                class="ml-n5 mr-1"
-              >
-                <template v-slot:append>
-                  <v-icon @click="saveText(task)" color="green">mdi-check-bold</v-icon>
-                  <v-icon @click="endEditText" color="grey" class="ml-2">mdi-close</v-icon>
-                </template>
-              </v-text-field>
-
-              <template v-else>
-                <v-spacer></v-spacer>
-
-              <!-- <v-scroll-x-transition>
-                <v-icon
-                  v-if="task.done"
-                  color="success"
-                >
-                  check
-                </v-icon>
-              </v-scroll-x-transition> -->
-                <v-btn @click="startEditText(i, task.text)" icon>
-                  <v-icon>mdi-pencil</v-icon>
-                </v-btn>
-              </template>
-              <v-btn @click="deleteTask(i)" icon class="">
-                <v-icon>mdi-trash-can-outline</v-icon>
-              </v-btn>
-            </v-list-item>
-          </template>
-        </v-list>
-      </template>
-    </v-card>
   </v-container>
 </template>
 
@@ -201,12 +169,11 @@ export default {
       this.task = ""
     },
     startSwapTasks() {
-      this.editTasks = JSON.parse(JSON.stringify(this.tasks))
+      // this.editTasks = JSON.parse(JSON.stringify(this.tasks))
       this.isSwap = true
+      this.endEditText()
     },
     endSwapTasks() {
-      // this.save()
-      this.tasks = this.editTasks
       this.isSwap = false
     },
     startEditText(index, text) {
@@ -238,5 +205,16 @@ export default {
 <style lang="scss" scoped>
 .container {
   max-width: 500px;
+}
+.fill-width {
+  width: 100%;
+}
+.task-list {
+  min-height: 48px;
+  align-items: center;
+}
+.swap-icon {
+  height: 32px;
+  width: 32px;
 }
 </style>
