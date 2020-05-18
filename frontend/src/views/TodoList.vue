@@ -6,6 +6,9 @@
       solo
       @keypress.enter="create"
     >
+      <template v-slot:append>
+        <v-icon @click="task = ''" color="grey" class="ml-2">mdi-close</v-icon>
+      </template>
     </v-text-field>
 
     <h2 class="display-1 success--text pl-4">
