@@ -59,8 +59,8 @@
     <v-divider class="mb-4"></v-divider>
 
     <v-row v-if="tasks.length > 0">
-      <draggable v-if="isSwap" v-model="tasks" class="fill-width">
-        <v-col v-for="(task, i) in tasks" :key="`${i}-${task.text}`" cols="12" class="py-0">
+      <draggable v-if="isSwap" v-model="editTasks" class="fill-width">
+        <v-col v-for="(task, i) in editTasks" :key="`${i}-${task.text}`" cols="12" class="py-0">
           <v-card outlined class="d-flex px-4 task-list">
             <v-icon class="swap-icon">mdi-drag-vertical</v-icon>
             <div
@@ -133,22 +133,27 @@ export default {
   data: () => ({
     tasks: [
       {
+        id: "1",
         done: false,
-        text: 'Foobar'
+        text: 'Foobar',
+        order: 1
       },
       {
+        id: "2",
         done: false,
-        text: 'Fizzbuzz'
+        text: 'Fizzbuzz',
+        order: 2
       },
       {
+        id: "3",
         done: true,
-        text: 'bubble sort'
+        text: 'bubble sort',
+        order: 3
       },
     ],
     editTasks: [],
     task: "",
     isSwap: false,
-    isEdit: false,
     editText: '',
     editTargetIndex: null
   }),
@@ -166,18 +171,27 @@ export default {
   methods: {
     create() {
       this.tasks.push({
+        id: `${this.tasks.length + 1}`,
         done: false,
         text: this.task,
+        order: this.tasks.length + 1
       })
       this.task = ""
     },
     startSwapTasks() {
-      // this.editTasks = JSON.parse(JSON.stringify(this.tasks))
+      this.editTasks = JSON.parse(JSON.stringify(this.tasks))
       this.isSwap = true
       this.endEditText()
     },
     endSwapTasks() {
+      this.tasks = this.editTasks.map((obj, index) => {
+        return {
+          ...obj,
+          order: index + 1
+        }
+      })
       this.isSwap = false
+      this.editTasks = []
     },
     startEditText(index, text) {
       this.isEdit = true
@@ -197,9 +211,6 @@ export default {
     deleteTask(index) {
       this.tasks.splice(index, 1)
       this.endEditText()
-    },
-    draggableEnd(event) {
-      console.log(event)
     }
   }
 };
